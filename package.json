@@ -2,7 +2,7 @@
   "name": "item-list-backend",
   "version": "1.0.0",
   "description": "Simple CRUD with item listing system (Node with express + postgres)",
-  "main": "index.js",
+  "main": "",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,9 +1,9 @@
-create table items(
-item_id primary key,
-item_name varchar(255) not null,
-description text,
-quantity INT not null default 1
-)
+CREATE TABLE items (
+    item_id SERIAL PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    quantity INT NOT NULL DEFAULT 1
+);
 
 -- data
 INSERT INTO items (name, description, quantity) VALUES 

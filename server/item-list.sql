@@ -6,7 +6,7 @@ CREATE TABLE items (
 );
 
 -- data
-INSERT INTO items (name, description, quantity) VALUES 
+INSERT INTO items (item_name, description, quantity) VALUES 
 ('Laptop', 'A high-performance laptop', 10),
 ('Mouse', 'Wireless mouse', 20),
 ('Keyboard', 'Mechanical keyboard', 15),

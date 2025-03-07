@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Example</title>
+</head>
+<body>
+    
+    <p id="display">Loading...</p>
+
+    <script>
+        async function fetchData() {
+            try {
+                const response = await fetch('http://localhost:3005/api/items');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                // The API returns an array of items, so we need to format it properly
+                const formattedData = data.map(item => 
+                    `ID: ${item.item_id}, Name: ${item.item_name}, Description: ${item.description}, Quantity: ${item.quantity}`
+                ).join('<br>');
+                
+                document.getElementById("display").innerHTML = formattedData;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById("display").textContent = "Failed to load data.";
+            }
+        }
+
+        fetchData();
+    </script>
+
+</body>
+</html>

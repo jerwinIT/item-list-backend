@@ -22,82 +22,93 @@ function GetData() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch("http://localhost:3000/api/items");
+                const response = await fetch("http://localhost:3005/api/items");
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const result = await response.json();
-                setData(result.slice(0, 12));
-                console.log(result);
+                setData(result);
+                console.log('Fetched data:', result);
             } catch (err) {
                 setError(err.message);
+                console.error('Fetch error:', err);
             }
         }
         fetchData();
     }, []);
 
     const handleAddTask = async () => {
-        const newTitle = prompt("Enter task title:");
-        const newBody = prompt("Enter task description:");
+        const newName = prompt("Enter item name:");
+        const newDescription = prompt("Enter item description:");
+        const newQuantity = parseInt(prompt("Enter quantity:"));
 
-        if (newTitle && newBody) {
+        if (newName && newDescription && newQuantity) {
             try {
-                const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+                const response = await fetch("http://localhost:3005/api/items", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ title: newTitle, body: newBody, userId: 1 }),
+                    body: JSON.stringify({ 
+                        item_name: newName, 
+                        description: newDescription, 
+                        quantity: newQuantity 
+                    }),
                 });
 
                 if (!response.ok) {
-                    throw new Error("Failed to add task");
+                    throw new Error("Failed to add item");
                 }
 
-                const newTask = await response.json();
-                setData([...data, { ...newTask, id: data.length + 1 }]); // Fake an ID for UI
+                const newItem = await response.json();
+                setData([...data, newItem]);
             } catch (error) {
-                console.error("Error adding task:", error);
+                console.error("Error adding item:", error);
             }
         }
     };
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+            const response = await fetch(`http://localhost:3005/api/items/${id}`, {
                 method: "DELETE",
             });
             if (!response.ok) {
-                throw new Error("Failed to delete post");
+                throw new Error("Failed to delete item");
             }
-            setData(data.filter(post => post.id !== id));
+            setData(data.filter(item => item.item_id !== id));
         } catch (error) {
-            console.error("Error deleting post:", error);
+            console.error("Error deleting item:", error);
         }
     };
 
     const handleUpdate = async (id) => {
-        const newTitle = prompt("Enter new title:");
-        const newBody = prompt("Enter new body:");
+        const newName = prompt("Enter new name:");
+        const newDescription = prompt("Enter new description:");
+        const newQuantity = parseInt(prompt("Enter new quantity:"));
 
-        if (newTitle && newBody) {
+        if (newName && newDescription && newQuantity) {
             try {
-                const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+                const response = await fetch(`http://localhost:3005/api/items/${id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ title: newTitle, body: newBody, userId: 1 }),
+                    body: JSON.stringify({ 
+                        item_name: newName, 
+                        description: newDescription, 
+                        quantity: newQuantity 
+                    }),
                 });
 
                 if (!response.ok) {
-                    throw new Error("Failed to update post");
+                    throw new Error("Failed to update item");
                 }
 
-                const updatedPost = await response.json();
-                setData(data.map(post =>
-                    post.id === id ? { ...post, title: updatedPost.title, body: updatedPost.body } : post
+                const updatedItem = await response.json();
+                setData(data.map(item =>
+                    item.item_id === id ? updatedItem : item
                 ));
             } catch (error) {
-                console.error("Error updating post:", error);
+                console.error("Error updating item:", error);
             }
         }
     };
@@ -108,8 +119,15 @@ function GetData() {
         <>
             <Navbar onAdd={handleAddTask} />
             <div className="container mt-3 d-flex flex-wrap gap-2 justify-content-center">
-                {data.map((post) => (
-                    <Card key={post.id} id={post.id} title={post.title} body={post.body} onDelete={handleDelete} onUpdate={handleUpdate} />
+                {data.map((item) => (
+                    <Card 
+                        key={item.item_id} 
+                        id={item.item_id} 
+                        title={item.item_name} 
+                        body={`Description: ${item.description}, Quantity: ${item.quantity}`} 
+                        onDelete={handleDelete} 
+                        onUpdate={handleUpdate} 
+                    />
                 ))}
             </div>
         </>
